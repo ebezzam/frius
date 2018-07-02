@@ -1,7 +1,7 @@
 *DS_Store
 *resolution_distortion_expe_dataset_rf.h5
-report_results/*.pdf
-report_results/*.png
+*.pdf
+*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
