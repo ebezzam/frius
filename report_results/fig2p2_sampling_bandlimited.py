@@ -21,7 +21,7 @@ ax = plt.gca()
 ax.axes.yaxis.set_ticklabels([])
 
 plt.tight_layout()
-plt.savefig("nonbandlimited.pdf", dpi=1000)
+plt.savefig("_fig2p2a.pdf", dpi=300)
 
 """
 Ideal low pass filter
@@ -41,6 +41,6 @@ ax = plt.gca()
 ax.axes.yaxis.set_ticklabels([])
 
 plt.tight_layout()
-plt.savefig("antialiasing.pdf", dpi=1000)
+plt.savefig("_fig2p2b.pdf", dpi=300)
 
 plt.show()

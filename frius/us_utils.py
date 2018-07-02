@@ -223,7 +223,7 @@ def add_noise(sig, snr_db, seed=0):
         noise_std = np.linalg.norm(sig) / (10**(snr_db/20.))
         noise = noise/np.linalg.norm(noise)*noise_std
 
-    return noise
+    return (sig+noise)
 
 
 def total_freq_response(freqs, center_freq, bandwidth, num_cycles, bwr=-6,
@@ -425,11 +425,6 @@ def localize_point(pos_tup, echo_tup, speed_sound):
         return x_hat[1], z_hat[1]
     else:
         return x_hat[0], z_hat[0]
-
-
-def compute_snr_db(y_true, y_hat):
-
-    return 20*np.log10(np.linalg.norm(y_true)/np.linalg.norm(y_true-y_hat))
 
 
 def loc_2d_snr(x_coord_true, z_coord_true, x_coord_est, z_coord_est):

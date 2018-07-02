@@ -336,7 +336,8 @@ def tof_sort_greedy(echo_unsorted, array_pos, speed_sound, ref=0, verbose=False)
 
     return sorted_echo_est, sorted_echo_est_dict, sorted_echo_chan_dict
 
-def tof_sort_ndt(echo_unsorted, array_pos, speed_sound, n_points=None, verbose=False):
+
+def tof_sort_nde(echo_unsorted, array_pos, speed_sound, n_points=None, verbose=False):
     """
     Motivated by the scenario in which echoes do not appear across all channels.
 
@@ -353,11 +354,6 @@ def tof_sort_ndt(echo_unsorted, array_pos, speed_sound, n_points=None, verbose=F
     pulse_cone = np.sqrt(D)/speed_sound
     dim = array_pos.shape[0]
     nrx = array_pos.shape[1]
-
-    # # initialize data struct keeping track of used echoes
-    # remaining_idx = dict()
-    # for k in range(nrx):
-    #     remaining_idx[k] = list(np.arange(echo_unsorted.shape[1]))
 
     # initialize for rank test
     D_aug = np.zeros((nrx+1, nrx+1))
@@ -384,15 +380,6 @@ def tof_sort_ndt(echo_unsorted, array_pos, speed_sound, n_points=None, verbose=F
         remaining_idx = dict()
         for k in range(nrx):
             remaining_idx[k] = list(np.arange(echo_unsorted.shape[1]))
-
-
-        # DEBUG PRINTS
-        print()
-        print("DEBUG PRINTS")
-        for k in range(nrx):
-            print("chan %d, remaining echoes %d" % (k+1, len(remaining_idx[k])))
-        print()
-
         other_channels = np.delete(np.arange(nrx), ref)
 
         # disregard already use echoes
@@ -434,6 +421,8 @@ def tof_sort_ndt(echo_unsorted, array_pos, speed_sound, n_points=None, verbose=F
             for k in other_channels:
                 cand_per_chan_lst.append(list(cand_per_chan_prun[k]))
             cand = list(itertools.product(*cand_per_chan_lst))
+            if len(cand)==0:
+                continue
 
             # gram test on all combos
             score = np.inf
@@ -442,29 +431,22 @@ def tof_sort_ndt(echo_unsorted, array_pos, speed_sound, n_points=None, verbose=F
 
                 round_times = np.insert(np.array(vec), ref, t1)
 
-                # remove estimate of tx dist, take average of all pairs?
+                # remove estimate of tx dist, take average of all pairs
                 tx_dist = estimate_2d_loc(array_pos[0], round_times[:,np.newaxis], 
                     speed_sound, avg=True)[1][0]
-                if math.isnan(tx_dist):  # TODO : something more elegant here or inside `estimate_2d_loc`
-                    print("remove this dirty check")
+                if math.isnan(tx_dist):
                     continue
-
                 dk = speed_sound*round_times - tx_dist
+
+                # augment EDM
                 dk = dk*dk
                 D_aug[-1,:nrx] = dk
                 D_aug[:nrx,-1] = dk
                 G = gram_from_edm(D_aug)
-
-                # TODO check if G has neg entries --> not valid!
-
                 s = svd(G, full_matrices=False, compute_uv=False)
-
                 if s[dim] < score:
                     score = s[dim]
                     est_match = round_times
-
-            if n_poss_parab == 0:   # there were no candidates, don't add anything dictionaries
-                continue
 
             # pick best combo of 3 if yields better score as echo might not be present in all channels
             sorted_tof_est_ref[point_idx] = est_match
@@ -476,16 +458,15 @@ def tof_sort_ndt(echo_unsorted, array_pos, speed_sound, n_points=None, verbose=F
                 D4[:3,:3] = edm(array_pos[:, combo])
                 round_times = est_match[combo]
 
-                # remove estimate of tx dist
+                # remove estimate of tx dist, take average of all pairs
                 tx_dist = estimate_2d_loc(array_pos[0][combo], round_times[:,np.newaxis], 
                     speed_sound, avg=True)[1][0]
-                if math.isnan(tx_dist):  # TODO : something more elegant here or inside `estimate_2d_loc`
-                    print("remove this dirty check 2")
+                if math.isnan(tx_dist):
                     continue
-
                 dk = speed_sound*round_times - tx_dist
-                dk = dk*dk
 
+                # augment EDM
+                dk = dk*dk
                 D4[-1,:3] = dk
                 D4[:3,-1] = dk
                 G = gram_from_edm(D4)
@@ -502,7 +483,8 @@ def tof_sort_ndt(echo_unsorted, array_pos, speed_sound, n_points=None, verbose=F
                 try:
                     remaining_idx[chan].remove(used_idx)
                 except:
-                    print("For channel %d, echo %d is used again." % (k, used_idx))
+                    if verbose:
+                        print("For channel %d, echo %d is used again." % (k, used_idx))
 
         sorted_tof_est.append(sorted_tof_est_ref)
         sorted_tof_chan.append(sorted_tof_chan_ref)

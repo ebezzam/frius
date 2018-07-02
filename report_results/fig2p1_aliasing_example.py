@@ -50,7 +50,7 @@ plt.xticks([8000, 16000, 24000, 32000, 40000, 48000],
 plt.tight_layout()
 plt.xlim([0, max(f_vals_hi)])
 
-plt.savefig("no_aliasing_ultrasound.pdf", dpi=1000)
+plt.savefig("_fig2p1a.pdf", dpi=300)
 
 """
 Aliasing
@@ -68,7 +68,7 @@ plt.xticks([8000, 16000, 24000],
 plt.tight_layout()
 plt.xlim([0, 48000/2])
 
-plt.savefig("aliasing_ultrasound.pdf", dpi=1000)
+plt.savefig("_fig2p1b.pdf", dpi=300)
 
 plt.show()
 

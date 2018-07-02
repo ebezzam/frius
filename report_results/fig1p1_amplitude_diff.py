@@ -37,6 +37,6 @@ ax = plt.gca()
 ax.xaxis.tick_top()
 plt.grid()
 
-plt.savefig("amplitude_diff.pdf", dpi=300)
+plt.savefig("_fig1p1.pdf", dpi=300)
 
 plt.show()

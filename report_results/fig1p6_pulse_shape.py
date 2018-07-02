@@ -25,6 +25,7 @@ h = gausspulse(t_vals, fc, bandwidth, bwr)
 
 plt.figure()
 plt.plot(t_vals, h)
+plt.xlim([-6e-7, 6e-7])
 plt.grid()
 
 plt.xlabel("Time [seconds]")
@@ -34,7 +35,7 @@ ax.axes.yaxis.set_ticklabels([])
 # ax.axes.xaxis.set_ticklabels([])
 
 plt.tight_layout()
-plt.savefig("gauspuls.pdf", dpi=1000)
+plt.savefig("_fig1p6a.pdf", dpi=300)
 
 # frequency domain pulse
 f_vals = np.linspace(-3*fc-1e3, 3*fc+1e3, 1000)
@@ -53,7 +54,7 @@ plt.xlabel("Frequency [Hz]")
 plt.ylim([-40,0])
 
 plt.tight_layout()
-plt.savefig("gauspuls_freq.pdf", dpi=1000)
+plt.savefig("_fig1p6b.pdf", dpi=300)
 
 
 plt.show()

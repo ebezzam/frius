@@ -64,8 +64,9 @@ plt.figure()
 plt.plot(t_excite, excitation)
 plt.grid()
 plt.xlabel("Time [seconds]")
+plt.xlim([0, 5e-7])
 plt.tight_layout()
-plt.savefig("excitation.pdf", dpi=1000)
+plt.savefig("_fig1p7a.pdf", dpi=300)
 
 
 f_vals = np.fft.fftfreq(len(excitation), d=1/samp_freq)
@@ -86,6 +87,6 @@ plt.legend(loc="upper right")
 plt.xlabel("Frequency [Hz]")
 plt.ylim([-40,0])
 plt.tight_layout()
-plt.savefig("excitation_ft.pdf", dpi=1000)
+plt.savefig("_fig1p7b.pdf", dpi=300)
 
 plt.show()
