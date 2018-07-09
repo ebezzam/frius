@@ -3,7 +3,7 @@
 Author: [Eric Bezzam](https://ebezzam.github.io/)  
 Supervisors: [Adrien Besson](https://adribesson.github.io/),<sup>1</sup> 
 [Hanjie Pan](https://lcav.epfl.ch/people/hanjie.pan),<sup>2</sup>
-[Dimitris Perdios](https://people.epfl.ch/dimitris.perdios), <sup>1</sup>
+[Dimitris Perdios](https://people.epfl.ch/dimitris.perdios),<sup>1</sup>
 [Prof. Jean-Philippe Thiran](https://lts5www.epfl.ch/thiran.html)<sup>1</sup>
 
 <sup>1</sup>Signal Processing Laboratory 5 ([LTS5](https://lts5www.epfl.ch/)) at [EPFL](http://www.epfl.ch).  
@@ -17,8 +17,8 @@ Or feel free to create an issue up top!
 ## Summary
 
 The initial goal of this Master thesis was to reduce the sampling and thus data rate necessary for medical ultrasound imaging.
-To this end, we investigate how recent signal processing approach with regards to _Finite Rate of Innovation_ (FRI) and
-_Euclidean Distance Matrices_ (EDM) can be applied to the task of ultrasound imaging and localization. 
+To this end, we investigate how recent signal processing approach with regards to [_Finite Rate of Innovation_](https://ieeexplore.ieee.org/document/1003065/) (FRI) and
+[_Euclidean Distance Matrices_](https://ieeexplore.ieee.org/document/7298562/) (EDM) can be applied to the task of ultrasound imaging and localization. 
 
 For medical imaging, we identify a few practical limitations (e.g. sparsity under noise, zero-finding) that 
 complicate the application of FRI techniques, in particular to achieve real-time imaging at sampling rates lower than 
