@@ -1,12 +1,12 @@
 # Sampling at the rate of innovation for ultrasound imaging and localization (EPFL Master Thesis 2018)
 
 Author: [Eric Bezzam](https://ebezzam.github.io/)  
-Supervisors: [Adrien Besson](https://adribesson.github.io/)<sup>1</sup>, 
+Supervisors: [Adrien Besson](https://adribesson.github.io/),<sup>1</sup> 
 [Hanjie Pan](https://lcav.epfl.ch/people/hanjie.pan),<sup>2</sup>
-[Dimitris Perdios](https://people.epfl.ch/dimitris.perdios)<sup>1</sup>, 
+[Dimitris Perdios](https://people.epfl.ch/dimitris.perdios), <sup>1</sup>
 [Prof. Jean-Philippe Thiran](https://lts5www.epfl.ch/thiran.html)<sup>1</sup>
 
-<sup>1</sup>Signal Processing Laboratory 5([LTS5](https://lts5www.epfl.ch/)) at [EPFL](http://www.epfl.ch).  
+<sup>1</sup>Signal Processing Laboratory 5 ([LTS5](https://lts5www.epfl.ch/)) at [EPFL](http://www.epfl.ch).  
 <sup>2</sup>Audiovisual Communications Laboratory ([LCAV](http://lcav.epfl.ch)) at [EPFL](http://www.epfl.ch).
 
 
@@ -88,11 +88,12 @@ All the figures in the report can be created by running:
 python generate_figures.py
 ```
 
-The PDF (and some PNG) files will be written to this directory.
+The PDF (and some PNG) files will be written to: `'report_results/FIGURES'`.
 
-For a particular figure, e.g. 'Figure 1.6', the image can be generated
-(and with modified parameters) by running the corresponding script 
-`'report_results/figXpX*.py'`, e.g. `'report_results/fig1p6_pulse_shape.py''`.
+For a particular figure, the image can be generated (and with modified
+parameters) by running the corresponding script 
+`'report_results/figXpX*.py'`, e.g. 
+`'report_results/fig1p6_pulse_shape.py'` for Figure 1.6 in the report.
 
 _Note: this is only true for those figures that were generated with Python, e.g.
 simulations._
