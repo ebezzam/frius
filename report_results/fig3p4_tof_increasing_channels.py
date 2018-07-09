@@ -10,9 +10,8 @@ MARKER_SIZE = 10
 from test_utilities import evaluate_tof_sorting
 
 import sys
-sys.path.append('..')
-from frius import Probe, Medium, estimate_2d_loc
-from frius import compute_srr_db_points
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
+from frius import Probe, Medium
 from frius import tof_sort_pruning
 
 """
@@ -77,7 +76,7 @@ if __name__ == '__main__':
 
     # load file if available, otherwise run test
     try:
-        npzfile = np.load(os.path.join(results_dir, "results.npz"))
+        npzfile = np.load(os.path.join(os.path.dirname(__file__), results_dir, "results.npz"))
         n_points_vals = npzfile["n_points_vals"]
         nrx_vals = npzfile["nrx_vals"]
         n_comb = npzfile["n_comb"]
@@ -146,9 +145,8 @@ if __name__ == '__main__':
         Save results
         """
         time_stamp = datetime.datetime.now().strftime("%m_%d_%Hh%M")
-        results_dir = "tof_increasing_nrx_%s" % (time_stamp)
+        results_dir = os.path.join(os.path.dirname(__file__), "tof_increasing_nrx_%s" % (time_stamp))
         os.makedirs(results_dir)
-
         np.savez(os.path.join(results_dir, "results"), 
             n_trials=n_trials, n_points_vals=n_points_vals, nrx_vals=nrx_vals,
             n_comb=n_comb, proc_time=proc_time)
@@ -170,8 +168,8 @@ if __name__ == '__main__':
     plt.xlabel("Num. reflectors")
     plt.ylabel("Num. combinations")
     plt.tight_layout()
-    plt.savefig(os.path.join(results_dir, "_fig3p4a.pdf"), 
-            format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig3p4a.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.figure()
     for nrx_idx, nrx in enumerate(nrx_vals):
@@ -181,7 +179,7 @@ if __name__ == '__main__':
     plt.xlabel("Num. reflectors")
     plt.ylabel("Processing time [s]")
     plt.tight_layout()
-    plt.savefig(os.path.join(results_dir, "_fig3p4b.pdf"), 
-            format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig3p4b.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.show()

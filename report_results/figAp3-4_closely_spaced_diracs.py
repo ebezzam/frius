@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 # plot settings
 import plot_settings
@@ -6,11 +7,11 @@ import matplotlib.pyplot as plt
 ALPHA = 0.6
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import sample_ideal_project, estimate_fourier_coeff, compute_ann_filt, estimate_time_param, estimate_amplitudes, compute_srr_db_points, compute_srr_db
 
 """
-Resolving two diracs that are close in noiseless situation.
+Resolving two Diracs that are close in noiseless situation.
 """
 
 
@@ -34,6 +35,7 @@ def compute_condition(t, dt):
 
     return np.abs(lamb_max)/np.abs(lamb_min)
 
+
 period = 1
 offset = 0  # place at center to avoid "circular" distance
 n_vals = 100
@@ -41,8 +43,7 @@ min_sep = 1e-7   # fraction of period
 max_sep = 1e-2      # fraction of period
 
 # sweep
-sep_vals = np.logspace(np.log10(min_sep), np.log10(max_sep), base=10.0, 
-    num=n_vals)
+sep_vals = np.logspace(np.log10(min_sep), np.log10(max_sep), base=10.0, num=n_vals)
 sep_est = np.zeros(len(sep_vals))
 srr_dev = np.zeros(len(sep_vals))
 srr = np.zeros(len(sep_vals))
@@ -62,8 +63,7 @@ for i, sep in enumerate(sep_vals):
     fs_coeff_hat = estimate_fourier_coeff(y_samp, t_samp, fs_ind=fs_ind)
     ann_filt = compute_ann_filt(fs_coeff_hat, K)
     _tk_hat = estimate_time_param(ann_filt, period)
-    _ck_hat, cond[i] = estimate_amplitudes(fs_coeff_hat, fs_ind/period, 
-        _tk_hat, period, return_cond=True)
+    _ck_hat, cond[i] = estimate_amplitudes(fs_coeff_hat, fs_ind/period, _tk_hat, period, return_cond=True)
 
     # evaluate
     sep_est[i] = abs(_tk_hat[0]-_tk_hat[1])
@@ -89,7 +89,8 @@ plt.xlabel("Normalized separation")
 plt.legend()
 plt.grid()
 plt.tight_layout()
-plt.savefig("_figAp3a.pdf", format='pdf', dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_figAp3a.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.figure()
 plt.loglog(sep_vals, sep_est, alpha=ALPHA)
@@ -111,7 +112,8 @@ plt.ylabel("SRR [dB]")
 plt.xlabel("Normalized separation")
 plt.grid()
 plt.tight_layout()
-plt.savefig("_figAp4a.pdf", format='pdf', dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_figAp4a.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.figure()
 plt.semilogx(sep_vals, ck_hat[:,0], 'g-', label="Estimated $c_0$", alpha=ALPHA)
@@ -121,7 +123,8 @@ plt.xlabel("Normalized separation")
 plt.grid()
 plt.tight_layout()
 plt.legend()
-plt.savefig("_figAp4b.pdf", format='pdf', dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_figAp4b.pdf")
+plt.savefig(fp, dpi=300)
 
 tk = sep_vals*period
 plt.figure()
@@ -131,10 +134,8 @@ plt.xlabel("Normalized separation")
 plt.grid()
 plt.tight_layout()
 plt.legend()
-plt.savefig("_figAp3b.pdf", format='pdf', dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_figAp3b.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.show()
 
-
-
-    

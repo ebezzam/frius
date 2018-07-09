@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 ALPHA = 0.7
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import das_beamform, image_bf_data, time2distance, distance2time
 
 """
@@ -21,7 +21,7 @@ display_depth = 0.05
 """ Load data """
 raw_file = 'raw_data_20points_SNR35dB_1pw_1p0cycles_1-05_09h11.h5'
 n_points = 20
-f = h5py.File(os.path.join('..', 'data', raw_file), 'r')
+f = h5py.File(os.path.join(os.path.dirname(__file__), '..', 'data', raw_file), 'r')
 
 # extract all fields
 rf_data = np.squeeze(np.array(f['rf_data']))
@@ -69,7 +69,8 @@ image_bf_data(bf_data, probe_geometry, max_depth=display_depth,
 plt.ylabel('Axial [cm]')
 plt.xlabel('Lateral [cm]')
 plt.tight_layout()
-plt.savefig("_fig2p19a.png", format='png', dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p19a.png")
+plt.savefig(fp, dpi=300)
 
 # plot one channel
 channel_idx = n_elements//2
@@ -81,7 +82,7 @@ plt.xlabel("Time [s]")
 plt.tight_layout()
 ax = plt.gca()
 ax.axes.yaxis.set_ticklabels([])
-plt.savefig("_fig2p19b.pdf", format='pdf', dpi=300)
-
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p19b.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.show()

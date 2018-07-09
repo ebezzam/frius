@@ -18,11 +18,13 @@ Compare different functions for computing the zeros/roots of a complex
 polynomial.
 """
 
+
 def compare_mpc(x, y):
     if abs(x.real) < abs(y.real):
         return x.real-y.real
     else:
         return y.real-x.real
+
 
 def cmp_to_key(mycmp):
     'Convert a cmp= function into a key= function'
@@ -42,6 +44,7 @@ def cmp_to_key(mycmp):
         def __ne__(self, other):
             return mycmp(self.obj, other.obj) != 0
     return K
+
 
 def process(seed, K):
     """
@@ -94,7 +97,7 @@ if __name__ == '__main__':
     prob_vals = []   # extra values to test
 
     try:
-        npzfile = np.load(os.path.join(results_dir, "results.npz"))
+        npzfile = np.load(os.path.join(os.path.dirname(__file__), results_dir, "results.npz"))
         err_roots = npzfile['err_roots']
         err_poly = npzfile['err_poly']
         err_mpmath = npzfile['err_mpmath']
@@ -142,7 +145,7 @@ if __name__ == '__main__':
         Save results
         """
         time_stamp = datetime.datetime.now().strftime("%m_%d_%Hh%M")
-        results_dir = "zero_finding_%s" % time_stamp
+        results_dir = os.path.join(os.path.dirname(__file__), "zero_finding_%s" % time_stamp)
         os.makedirs(results_dir)
         np.savez(os.path.join(results_dir, "results"), n_trials=n_trials, 
             n_diracs_vals=n_diracs_vals, err_roots=err_roots, err_poly=err_poly,
@@ -172,7 +175,7 @@ if __name__ == '__main__':
     plt.xlabel("Num. zeros (%d trials)" % n_trials)
     plt.legend(loc="upper right")
     plt.tight_layout()
-
-    plt.savefig(os.path.join(results_dir, "_figAp1.pdf"), format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_figAp1.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.show()

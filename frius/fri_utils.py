@@ -7,8 +7,7 @@ import warnings
 from .us_utils import total_freq_response
 
 
-def create_pulse_param(K, period=1, seed=0, unit_amp=False, pos=False,
-    viz=False, figsize=None, fontsize=20):
+def create_pulse_param(K, period=1, seed=0, unit_amp=False, pos=False, viz=False, figsize=None, fontsize=20):
     """
     Parameters
     ----------
@@ -59,9 +58,8 @@ def create_pulse_param(K, period=1, seed=0, unit_amp=False, pos=False,
     return ck, tk
 
 
-def sample_ideal_project(ck, tk, period, fc=0, K=None, H=None,
-    oversample_freq=1, n_samples=None, samp_freq=None,
-    viz=False, figsize=None, fontsize=20):
+def sample_ideal_project(ck, tk, period, fc=0, K=None, H=None, oversample_freq=1, n_samples=None, samp_freq=None,
+                         viz=False, figsize=None, fontsize=20):
     """
     Sample ideal projection (box filter) of pulse stream.
     
@@ -90,7 +88,7 @@ def sample_ideal_project(ck, tk, period, fc=0, K=None, H=None,
         Size of font for title and xlabel.
     """
     
-    if len(ck)!=len(tk):
+    if len(ck) != len(tk):
         raise ValueError("Must have equal number of amplitudes and locations!")
     if K is None:
         K = len(ck)
@@ -112,7 +110,9 @@ def sample_ideal_project(ck, tk, period, fc=0, K=None, H=None,
     tk_grid, freqs_grid = np.meshgrid(tk, fs_ind_base/period+fc)
     fs_coeff = np.dot(np.exp(-1j*2*np.pi*freqs_grid*tk_grid), ck)/period
     if H is not None:
-        fs_coeff *= H
+        freqs = fs_ind_base/period+fc
+        pulse_coef = [H(f) for f in freqs]
+        fs_coeff *= pulse_coef
     
     # compute samples
     Ts = period / n_samples
@@ -125,28 +125,30 @@ def sample_ideal_project(ck, tk, period, fc=0, K=None, H=None,
         y_samp = np.real(y_samp)
         
     if viz:
-        BW = 1/Ts
+
+        y_samp_norm = max(abs(y_samp))
+        ck_norm = max(abs(ck))
 
         if figsize is not None:
             plt.figure(figsize=figsize)
         else:
             plt.figure()
         plt.title("Signal parameters", fontsize=fontsize)
-        baseline = plt.stem(tk, ck, 'g', markerfmt='go', 
-            label="Signal parameters")[2]
+        baseline = plt.stem(tk, ck/ck_norm, 'g', markerfmt='go',
+                            label="Signal parameters")[2]
         plt.setp(baseline, color='g')
         baseline.set_xdata([0, period])
-        if fc==0:
-            plt.scatter(t_samp, y_samp/BW, label="Projected samples (LPF)")
-            plt.plot(t_samp, y_samp/BW)
-        else: # plot real and imaginary separately
-            plt.scatter(t_samp, np.real(y_samp), 
-                label="Projected samples (BP, real)")
-            plt.plot(t_samp, np.real(y_samp))
-            plt.scatter(t_samp, np.imag(y_samp), 
-                label="Projected samples (BP, imag)")
-            plt.plot(t_samp, np.imag(y_samp))
-        plt.xlim([0,period])
+        if fc == 0:
+            plt.scatter(t_samp, y_samp/y_samp_norm, label="Projected samples (LPF)")
+            plt.plot(t_samp, y_samp/y_samp_norm)
+        else:  # plot real and imaginary separately
+            plt.scatter(t_samp, np.real(y_samp)/y_samp_norm,
+                        label="Projected samples (BP, real)")
+            plt.plot(t_samp, np.real(y_samp)/y_samp_norm)
+            plt.scatter(t_samp, np.imag(y_samp)/y_samp_norm,
+                        label="Projected samples (BP, imag)")
+            plt.plot(t_samp, np.imag(y_samp)/y_samp_norm)
+        plt.xlim([0, period])
         plt.grid()
         plt.legend(fontsize=fontsize)
         plt.xlabel("Time [seconds]", fontsize=20);
@@ -232,14 +234,15 @@ def estimate_time_param(ann_filt, period):
 
     # solve for time locations
     uk = np.roots(ann_filt)
-    uk = uk / np.abs(uk)
+    uk = uk / np.abs(uk)    # project to unit circle
     tk_hat = np.real(1j * period * np.log(uk) / (2 * np.pi))
     tk_hat = tk_hat - np.floor(tk_hat / period) * period
 
     return tk_hat
 
 
-def estimate_amplitudes(fs_coeff_hat, freqs, tk_hat, period, return_cond=False):
+def estimate_amplitudes(fs_coeff_hat, freqs, tk_hat, period, reg=None,
+    return_cond=False):
     """
     Estimate amplitudes for periodic delta stream given estimated locations.
 
@@ -268,7 +271,12 @@ def estimate_amplitudes(fs_coeff_hat, freqs, tk_hat, period, return_cond=False):
 
     tk_grid, freqs_grid = np.meshgrid(tk_hat, freqs)
     Phi = np.exp(-1j*2*np.pi*freqs_grid*tk_grid)/period
-    ck_hat = np.real(lstsq(Phi, fs_coeff_hat)[0])
+    if reg is None:
+        ck_hat = np.real(lstsq(Phi, fs_coeff_hat)[0])
+    else:
+        reg_mat = reg*np.eye(Phi.shape[1]) + 1j*reg*np.eye(Phi.shape[1]) 
+        A = np.linalg.pinv(np.dot(Phi.conj().T, Phi) + reg_mat)
+        ck_hat = np.real(np.dot(A, np.dot(Phi.conj().T, fs_coeff_hat)))
 
     if return_cond:
         s = svd(Phi, full_matrices=False, compute_uv=False)
@@ -381,9 +389,9 @@ def cadzow_denoising(fs_coeff, K, L=None, n_iter=10):
     if L < K:
         raise ValueError("L should be larger than %d!" % K)
 
-    # fs_coeff_tild = fs_coeff[L:]
-    col1 = fs_coeff[L:]
-    row1 = np.flipud(fs_coeff[:L+1])
+    fs_coeff_denoised = fs_coeff
+    col1 = fs_coeff_denoised[L:]
+    row1 = np.flipud(fs_coeff_denoised[:L+1])
     for k in range(n_iter):
 
         # create toeplitz, ideally square
@@ -491,7 +499,7 @@ def demodulate(y_samp, t_samp, fc, K, oversample_freq=1):
 
 
 def recover_parameters(y_samp, time_vec, K, oversample_freq, center_freq, 
-    bandwidth, num_cycles, bwr=-6, cadzow_iter=20):
+    bandwidth, num_cycles, bwr=-6, cadzow_iter=20, reg=None):
     """
     y_samp : time domain samples, must be odd number!
     time_vec : corresponding sample locations, must start at 0!
@@ -526,13 +534,14 @@ def recover_parameters(y_samp, time_vec, K, oversample_freq, center_freq,
     fs_coeff_hat_clean = cadzow_denoising(fs_coeff_hat, K, n_iter=cadzow_iter)
     ann_filt = compute_ann_filt(fs_coeff_hat_clean, K)
     tk_hat = estimate_time_param(ann_filt, period)
-    ck_hat = estimate_amplitudes(fs_coeff_hat_clean, freqs, tk_hat, period)
+    ck_hat = estimate_amplitudes(fs_coeff_hat_clean, freqs, tk_hat, period, 
+        reg=reg)
 
     return ck_hat, tk_hat, period
 
 
 def recover_parameters_gen(y_samp, time_vec, K, oversample_freq, G, freqs, 
-    center_freq, max_ini=5, stop_cri='max_iter', seed=0):
+    center_freq, max_ini=5, stop_cri='max_iter', seed=0, reg=None):
 
     # demodulate
     y_iq, t_iq, fs_ind_base = demodulate(y_samp, time_vec, 
@@ -548,7 +557,7 @@ def recover_parameters_gen(y_samp, time_vec, K, oversample_freq, G, freqs,
 
     # solve for time instances
     tk_hat = estimate_time_param(c_opt, period)
-    ck_hat = estimate_amplitudes(fs_coeff_hat, freqs, tk_hat, period)
+    ck_hat = estimate_amplitudes(fs_coeff_hat, freqs, tk_hat, period, reg=reg)
 
     return ck_hat, tk_hat, period
 
@@ -695,7 +704,7 @@ def Rmtx(data, K, seq_len):
 
 
 def gen_fri(G, a, K, noise_level=np.inf, max_ini=100, stop_cri='mse', 
-    max_iter=50, seed=None):
+    max_iter=50, seed=0):
 
     compute_mse = (stop_cri == 'mse')
     M = G.shape[1]
@@ -710,11 +719,8 @@ def gen_fri(G, a, K, noise_level=np.inf, max_ini=100, stop_cri='mse',
     rhs_bl = np.concatenate((Gt_a, np.zeros(M - K)))
 
     for ini in range(max_ini):
-        if seed is None:
-            c = np.random.randn(K + 1) + 1j * np.random.randn(K + 1)
-        else:
-            rng = np.random.RandomState(seed+ini)
-            c = rng.randn(K + 1) + 1j * rng.randn(K + 1)
+        rng = np.random.RandomState(seed+ini)
+        c = rng.randn(K + 1) + 1j * rng.randn(K + 1)
         c0 = c.copy()
         error_seq = np.zeros(max_iter)
         R_loop = Rmtx(c, K, M)

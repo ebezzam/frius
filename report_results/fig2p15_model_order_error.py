@@ -1,5 +1,5 @@
 import numpy as np
-import warnings
+import warnings, os
 
 import plot_settings
 import matplotlib.pyplot as plt
@@ -7,7 +7,7 @@ ALPHA = 0.7
 LEGEND_FONT = 15
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import create_pulse_param, sample_ideal_project, estimate_fourier_coeff, compute_ann_filt, estimate_time_param, estimate_amplitudes, compute_srr_db_points, cadzow_denoising, gen_fri
 
 
@@ -16,8 +16,8 @@ Place two Diracs but try to estimate one, showing induced model order error
 for which oversampling and denoising is necessary.
 """
 
-def visualize(ck, tk, ck_hat, tk_hat, y_samp, t_samp, ck_hat_gen=None, 
-    tk_hat_gen=None):
+
+def visualize(ck, tk, ck_hat, tk_hat, y_samp, t_samp, ck_hat_gen=None, tk_hat_gen=None):
 
     BW = 1 / t_samp[1]
     plt.figure()
@@ -76,7 +76,8 @@ if __name__ == '__main__':
 
     # visualize
     visualize(ck, tk, ck_hat, tk_hat, y_samp, t_samp)
-    plt.savefig("_fig2p15a.pdf", format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p15a.pdf")
+    plt.savefig(fp, dpi=300)
 
     """ Oversample with cadzow denoising + genfri """
     stop_cri = 'max_iter'; max_ini=7
@@ -85,8 +86,7 @@ if __name__ == '__main__':
     n_samples = oversampling_time*(2*K_rec + 1)
 
     # sample
-    y_samp, t_samp, fs_ind = sample_ideal_project(ck, tk, period, n_samples=n_samples,
-        K=K_rec)
+    y_samp, t_samp, fs_ind = sample_ideal_project(ck, tk, period, n_samples=n_samples, K=K_rec)
 
     # standard FRI with cadzow denoising
     fs_coeff = estimate_fourier_coeff(y_samp, t_samp, fs_ind)
@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
     # visualize
     visualize(ck, tk, ck_hat, tk_hat, y_samp, t_samp, ck_hat_gen, tk_hat_gen)
-    plt.savefig("_fig2p15b.pdf", format='pdf', dpi=300)
-
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p15b.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.show()

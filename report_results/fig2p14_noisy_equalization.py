@@ -10,7 +10,7 @@ MARKER_SIZE = 10
 from test_utilities import process_fig2p14
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import total_freq_response, distance2time
 
 from frius import create_pulse_param, sample_iq, add_noise, estimate_fourier_coeff, cadzow_denoising, compute_ann_filt, estimate_time_param, estimate_amplitudes, gen_fri, compute_srr_db_points, sample_rf, compute_srr_db
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # test parameters
     n_diracs = 10
     max_ini = 5                 # for GenFRI
-    cadzow_iter = 20            # for Cadzow + TLS
+    cadzow_iter = 20            # for Cadzow + TLS, even number
     snr_vals = np.arange(35, -1, -5)
     oversample_fact = 10
     n_trials = 50
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     
     # load results if available, otherwise run test
     try:
-        npzfile = np.load(os.path.join(results_dir, "results.npz"))
+        npzfile = np.load(os.path.join(os.path.dirname(__file__), results_dir, "results.npz"))
         n_diracs = npzfile['n_diracs']
         tk_err = npzfile['tk_err']
         sig_err = npzfile['sig_err']
@@ -123,9 +123,8 @@ if __name__ == '__main__':
         Save results
         """
         time_stamp = datetime.datetime.now().strftime("%m_%d_%Hh%M")
-        results_dir = "noisy_equalization_%d_%s" % (n_diracs, time_stamp)
+        results_dir = os.path.join(os.path.dirname(__file__),"noisy_equalization_%d_%s" % (n_diracs, time_stamp))
         os.makedirs(results_dir)
-
         np.savez(os.path.join(results_dir, "results"), n_trials=n_trials, 
             n_diracs=n_diracs, snr_vals=snr_vals, oversample_fact=oversample_fact,
             sig_err=sig_err, tk_err=tk_err, sig_err_gen=sig_err_gen, 
@@ -152,8 +151,8 @@ if __name__ == '__main__':
     plt.grid()
     plt.legend()
     plt.tight_layout()
-    plt.savefig(os.path.join(results_dir, "_fig2p14a.pdf"), 
-        format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p14a.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.figure()
     plt.plot(snr_vals, avg_sig, 'b-', marker='^', markersize=MARKER_SIZE,
@@ -162,12 +161,11 @@ if __name__ == '__main__':
         alpha=ALPHA, label="general")
     plt.xlabel("SNR [dB]")
     plt.ylabel("$ SRR$ [dB]")
-    plt.ylim([-5,\
-        max(np.round(np.max(avg_sig)/5)*5, np.round(np.max(avg_sig_gen)/5)*5)+5])
+    plt.ylim([-5,max(np.round(np.max(avg_sig)/5)*5, np.round(np.max(avg_sig_gen)/5)*5)+5])
     plt.grid()
     plt.legend()
     plt.tight_layout()
-    plt.savefig(os.path.join(results_dir, "_fig2p14b.pdf"), 
-        format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p14b.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.show()

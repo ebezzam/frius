@@ -10,7 +10,7 @@ import mpmath
 mpmath.mp.dps = 100
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import distance
 
 """
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     prob_vals = np.array([500, 450, 400, 350, 300, 250])
 
     try:
-        npzfile = np.load(os.path.join(results_dir, "results.npz"))
+        npzfile = np.load(os.path.join(os.path.dirname(__file__), results_dir, "results.npz"))
         err_roots = npzfile['err_roots']
         err_unit = npzfile['err_unit']
         n_trials = npzfile['n_trials']
@@ -101,12 +101,11 @@ if __name__ == '__main__':
             trial_time = time.time() - start_trial
             print("time : %f min" % (trial_time/60))
 
-
         """
         Save results
         """
         time_stamp = datetime.datetime.now().strftime("%m_%d_%Hh%M")
-        results_dir = "project_zeros_%s" % time_stamp
+        results_dir = os.path.join(os.path.dirname(__file__), "project_zeros_%s" % time_stamp)
         os.makedirs(results_dir)
         np.savez(os.path.join(results_dir, "results"), n_trials=n_trials, 
             n_diracs_vals=n_diracs_vals, err_roots=err_roots, err_unit=err_unit)
@@ -131,7 +130,7 @@ if __name__ == '__main__':
     plt.xlabel("Num. zeros (%d trials)" % n_trials)
     plt.legend(loc="upper right")
     plt.tight_layout()
-
-    plt.savefig(os.path.join(results_dir, "_figAp2.pdf"), format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_figAp2.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.show()

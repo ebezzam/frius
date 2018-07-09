@@ -6,7 +6,7 @@ import plot_settings
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import distance2time, total_freq_response, time2distance, sample_rf
 from frius import estimate_fourier_coeff, cadzow_denoising, compute_ann_filt, estimate_time_param, estimate_amplitudes, compute_srr_db
 
@@ -41,7 +41,7 @@ probe_geometry = np.arange(n_elem_tx)*dx
 
 # load results if available, otherwise run algo
 try:
-    npzfile = np.load(os.path.join(results_dir, "results.npz"))
+    npzfile = np.load(os.path.join(os.path.dirname(__file__), results_dir, "results.npz"))
     rx_echoes = npzfile['rx_echoes']
     amplitudes = npzfile['amplitudes']
     resynth_score = npzfile['resynth_score']
@@ -58,7 +58,7 @@ except:
 if run_sweep:
 
     # signed 16 bit integer [-128,127]
-    ndt_rawdata = np.genfromtxt(os.path.join('..', 'data', 'ndt_rawdata.csv'), delimiter=',')
+    ndt_rawdata = np.genfromtxt(os.path.join(os.path.dirname(__file__), '..', 'data', 'ndt_rawdata.csv'), delimiter=',')
     n_samples = len(ndt_rawdata)
     time_vec = np.arange(n_samples)/samp_freq
     depth = time_vec[-1]/2*speed_sound
@@ -147,9 +147,8 @@ if run_sweep:
 
     """ save data """
     time_stamp = datetime.datetime.now().strftime("%m_%d_%Hh%M")
-    results_dir = "nde_standard_%s" % (time_stamp)
+    results_dir = os.path.join(os.path.dirname(__file__), "nde_standard_%s" % (time_stamp))
     os.makedirs(results_dir)
-
     np.savez(os.path.join(results_dir, "results"), rx_echoes=rx_echoes, 
         amplitudes=amplitudes, resynth_score=resynth_score, t0=t0, tN=tN,
         n_points=n_points, min_depth=min_depth, max_depth=max_depth, 
@@ -175,6 +174,7 @@ plt.ylim([0, scal_fact*tN])
 ax = plt.gca()
 ax.invert_yaxis()
 plt.tight_layout()
-plt.savefig(os.path.join(results_dir, "_fig4p5a.pdf"), format='pdf', dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig4p5a.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.show()

@@ -1,57 +1,8 @@
 import numpy as np
-from scipy.signal import square
 import plot_settings
 import matplotlib.pyplot as plt
-
-
-def create_square_excitation(n_cycles, center_freq, samp_freq):
-
-    n_rects = int(n_cycles/0.5)
-    if abs(n_rects*0.5-n_cycles) > 0.01:
-        print("Removing extra %f of cycle..." % abs(n_rects*0.5-n_cycles))
-
-    n_cycles = n_rects*0.5
-    n_neg = n_rects//2
-    n_pos = n_rects-n_neg
-
-    t_stop = int(n_cycles / center_freq * samp_freq) / samp_freq
-    n_samp = int(n_cycles / center_freq * samp_freq) + 1 
-    t_excite = np.linspace(0, t_stop, n_samp)
-    excitation = square(2 * np.pi * center_freq * t_excite)
-
-    return excitation, t_excite
-
-def square_excitation_ft(f_vals, n_cycles, center_freq, centered=True):
-
-    n_rects = int(n_cycles/0.5)
-    if abs(n_rects*0.5-n_cycles) > 0.01:
-        print("Removing extra %f of cycle..." % abs(n_rects*0.5-n_cycles))
-
-    n_cycles = n_rects*0.5
-    n_neg = n_rects//2
-    n_pos = n_rects-n_neg
-
-    if centered:
-        duration = n_cycles * (1/center_freq)
-        t_off = duration/2
-    else:
-        t_off = 0
-
-    pos_rects = np.zeros(len(f_vals), dtype=np.complex)
-    neg_rects = np.zeros(len(f_vals), dtype=np.complex)
-
-    for k in range(n_pos):
-        delay = 1/(4*center_freq) + k/center_freq - t_off
-        pos_rects += np.exp(-1j*2*np.pi*f_vals*delay)
-    for m in range(n_neg):
-        delay = 3/(4*center_freq) + m/center_freq - t_off
-        neg_rects += np.exp(-1j*2*np.pi*f_vals*delay)
-
-    # rect_ft = np.sinc(f_vals/2/center_freq) / (2*center_freq)
-    rect_ft = np.sinc(f_vals/2/center_freq)
-
-    return rect_ft * (pos_rects - neg_rects)
-
+import os
+from test_utilities import creat_square_excitation, square_excitation_ft
 
 # time domain plot
 fc = 5e6
@@ -66,7 +17,9 @@ plt.grid()
 plt.xlabel("Time [seconds]")
 plt.xlim([0, 5e-7])
 plt.tight_layout()
-plt.savefig("_fig1p7a.pdf", dpi=300)
+
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig1p7a.pdf")
+plt.savefig(fp, dpi=300)
 
 
 f_vals = np.fft.fftfreq(len(excitation), d=1/samp_freq)
@@ -87,6 +40,8 @@ plt.legend(loc="upper right")
 plt.xlabel("Frequency [Hz]")
 plt.ylim([-40,0])
 plt.tight_layout()
-plt.savefig("_fig1p7b.pdf", dpi=300)
+
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig1p7b.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.show()

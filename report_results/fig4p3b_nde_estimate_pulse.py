@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 # plotting settings
 import plot_settings
@@ -6,7 +7,7 @@ import matplotlib.pyplot as plt
 ALPHA = 0.8
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import total_freq_response
 
 
@@ -38,6 +39,7 @@ plt.xlim([5e-7, 25e-7])
 ax = plt.gca()
 ax.axes.xaxis.set_ticklabels([])
 ax.axes.yaxis.set_ticklabels([])
-plt.savefig("_fig4p3b.pdf", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig4p3b.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.show()

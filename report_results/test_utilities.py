@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.signal import square
 
 import sys
 sys.path.append('..')
@@ -7,6 +8,72 @@ from frius import create_pulse_param, compute_ann_filt, estimate_time_param, \
     estimate_fourier_coeff, estimate_amplitudes, compute_srr_db_points, \
     compute_srr_db, cadzow_denoising, gen_fri
 from frius import sample_iq, sample_rf, add_noise, total_freq_response, estimate_2d_loc
+
+
+def gausspuls_coeff(fc, bandwidth, bwr=-6.):
+    ref = pow(10.0, bwr / 20.0)
+    return -(np.pi * fc * bandwidth) ** 2 / (4.0 * np.log(ref))
+
+
+def gausspulse(t_vals, fc, bandwidth, bwr=-6.):
+    a = gausspuls_coeff(fc, bandwidth, bwr)
+    return np.exp(-a * t_vals**2) * np.cos(2*np.pi*fc*t_vals)
+
+
+def gauss_ft(f_vals, a, fc=0):
+    pos_half = np.sqrt(np.pi / a) * np.exp(-1.*(np.pi*(f_vals-fc))**2 / a)
+    neg_half = np.sqrt(np.pi / a) * np.exp(-1.*(np.pi*(f_vals+fc))**2 / a)
+    return (pos_half + neg_half)/2
+
+
+def create_square_excitation(n_cycles, center_freq, samp_freq):
+
+    n_rects = int(n_cycles/0.5)
+    if abs(n_rects*0.5-n_cycles) > 0.01:
+        print("Removing extra %f of cycle..." % abs(n_rects*0.5-n_cycles))
+
+    n_cycles = n_rects*0.5
+    n_neg = n_rects//2
+    n_pos = n_rects-n_neg
+
+    t_stop = int(n_cycles / center_freq * samp_freq) / samp_freq
+    n_samp = int(n_cycles / center_freq * samp_freq) + 1
+    t_excite = np.linspace(0, t_stop, n_samp)
+    excitation = square(2 * np.pi * center_freq * t_excite)
+
+    return excitation, t_excite
+
+
+def square_excitation_ft(f_vals, n_cycles, center_freq, centered=True):
+
+    n_rects = int(n_cycles/0.5)
+    if abs(n_rects*0.5-n_cycles) > 0.01:
+        print("Removing extra %f of cycle..." % abs(n_rects*0.5-n_cycles))
+
+    n_cycles = n_rects*0.5
+    n_neg = n_rects//2
+    n_pos = n_rects-n_neg
+
+    if centered:
+        duration = n_cycles * (1/center_freq)
+        t_off = duration/2
+    else:
+        t_off = 0
+
+    pos_rects = np.zeros(len(f_vals), dtype=np.complex)
+    neg_rects = np.zeros(len(f_vals), dtype=np.complex)
+
+    for k in range(n_pos):
+        delay = 1/(4*center_freq) + k/center_freq - t_off
+        pos_rects += np.exp(-1j*2*np.pi*f_vals*delay)
+    for m in range(n_neg):
+        delay = 3/(4*center_freq) + m/center_freq - t_off
+        neg_rects += np.exp(-1j*2*np.pi*f_vals*delay)
+
+    # rect_ft = np.sinc(f_vals/2/center_freq) / (2*center_freq)
+    rect_ft = np.sinc(f_vals/2/center_freq)
+
+    return rect_ft * (pos_rects - neg_rects)
 
 
 def process_fig2p6(n_diracs, seed, period, H_tot, freqs, 

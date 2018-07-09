@@ -11,7 +11,7 @@ LINESTYLE = '-'
 from test_utilities import process_noisy_samples_gen
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import total_freq_response, distance2time
 
 """
@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     # load file available, otherwise run test
     try:
-        npzfile = np.load(os.path.join(results_dir, "results.npz"))
+        npzfile = np.load(os.path.join(os.path.dirname(__file__), results_dir, "results.npz"))
         n_trials = npzfile['n_trials']
         n_diracs = npzfile['n_diracs']
         snr_vals = npzfile['snr_vals']
@@ -115,12 +115,12 @@ if __name__ == '__main__':
         Save results
         """
         time_stamp = datetime.datetime.now().strftime("%m_%d_%Hh%M")
-        results_dir = "noisy_samples_gen_%d_%s" % (n_diracs, time_stamp)
+        results_dir = os.path.join(os.path.dirname(__file__), "noisy_samples_gen_%d_%s" % (n_diracs, time_stamp))
         os.makedirs(results_dir)
-
         np.savez(os.path.join(results_dir, "results"), n_trials=n_trials, 
             n_diracs=n_diracs, snr_vals=snr_vals, oversampling_vals=oversampling_vals,
             sig_err=sig_err, tk_err=tk_err)
+        print("Results saved to %s" % results_dir)
 
     """ Visualize """
     avg_loc_score = np.mean(tk_err, axis=2)
@@ -138,8 +138,8 @@ if __name__ == '__main__':
     plt.grid()
     plt.legend()
     plt.tight_layout()
-    plt.savefig(os.path.join(results_dir, "_fig2p11a.pdf"), 
-        format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p11a.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.figure()
     for k, oversample_fact in enumerate(oversampling_vals):
@@ -152,9 +152,7 @@ if __name__ == '__main__':
     plt.grid()
     plt.legend()
     plt.tight_layout()
-    plt.savefig(
-        os.path.join(results_dir, "_fig2p11b.pdf"), 
-        format='pdf', dpi=300)
-    print("Results saved to %s" % results_dir)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p11b.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.show()

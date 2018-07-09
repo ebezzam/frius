@@ -1,11 +1,11 @@
 import numpy as np
-import h5py, os, time
+import os
 
 import plot_settings
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import Probe, Medium, estimate_2d_loc
 from frius import compute_srr_db_points
 from frius import tof_sort_plain
@@ -57,9 +57,11 @@ medium = Medium(width=width,
 
 # simulate recording
 recordings = probe_rx.record(medium, max_depth, viz=True)
-plt.savefig("_fig3p2b.pdf", format='pdf', dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig3p2b.pdf")
+plt.savefig(fp, dpi=300)
 probe_rx.visualize_medium_rec()
-plt.savefig("_fig3p2a.pdf", format='pdf', dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig3p2a.pdf")
+plt.savefig(fp, dpi=300)
 
 # ground truth
 echo_sort_true = probe_rx.round_trip

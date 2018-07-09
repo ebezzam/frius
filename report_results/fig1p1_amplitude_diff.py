@@ -1,6 +1,7 @@
 import numpy as np
 import plot_settings
 import matplotlib.pyplot as plt
+import os
 
 f_hi = 1000
 f_lo = 100
@@ -21,10 +22,10 @@ s_hi_stop = np.sin(2*np.pi*f_hi*right_ear)
 s_lo_start = np.sin(2*np.pi*f_lo*left_ear)
 s_lo_stop = np.sin(2*np.pi*f_lo*right_ear)
 
-plt.figure(figsize=(10,4))
+plt.figure(figsize=(10, 4))
 
-plt.plot(time, s_hi, label="%d Hz"%f_hi, ls='-')
-plt.plot(time, s_lo, label="%d Hz"%f_lo, ls='--')
+plt.plot(time, s_hi, label="%d Hz" % f_hi, ls='-')
+plt.plot(time, s_lo, label="%d Hz" % f_lo, ls='--')
 
 plt.xlabel("Time [seconds]")
 plt.autoscale(enable=True, axis='x', tight=True)
@@ -37,6 +38,8 @@ ax = plt.gca()
 ax.xaxis.tick_top()
 plt.grid()
 
-plt.savefig("_fig1p1.pdf", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig1p1.pdf")
+plt.savefig(fp, dpi=300)
+
 
 plt.show()

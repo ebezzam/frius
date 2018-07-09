@@ -1,24 +1,23 @@
 import numpy as np
-from scipy.signal import resample
+import os
 from scipy.io import wavfile
 import plot_settings
 import matplotlib.pyplot as plt
 
 
-input_wav = "speech_48k.wav"
 duration = 0.5
 ultrasound_freq = 30e3
 ultrasound_alias = 48e3-ultrasound_freq
 
-samp_freq, signal = wavfile.read(input_wav)
+samp_freq, signal = wavfile.read(os.path.join(os.path.dirname(__file__), "speech_48k.wav"))
 signal = signal[:int(duration*samp_freq)]
 
 freq_resp = 20*np.log10(np.abs(np.fft.fft(signal)))
 f_vals = np.fft.fftfreq(len(signal), d=1/samp_freq)
 
 # keep only positive
-freq_resp = freq_resp[f_vals>=0]
-f_vals = f_vals[f_vals>=0]
+freq_resp = freq_resp[f_vals >= 0]
+f_vals = f_vals[f_vals >= 0]
 
 """
 Non-aliasing, higher sampling frequency
@@ -50,7 +49,8 @@ plt.xticks([8000, 16000, 24000, 32000, 40000, 48000],
 plt.tight_layout()
 plt.xlim([0, max(f_vals_hi)])
 
-plt.savefig("_fig2p1a.pdf", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p1b.pdf")
+plt.savefig(fp, dpi=300)
 
 """
 Aliasing
@@ -68,7 +68,8 @@ plt.xticks([8000, 16000, 24000],
 plt.tight_layout()
 plt.xlim([0, 48000/2])
 
-plt.savefig("_fig2p1b.pdf", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p1a.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.show()
 

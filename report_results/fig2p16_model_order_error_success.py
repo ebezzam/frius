@@ -1,5 +1,5 @@
 import numpy as np
-import warnings
+import warnings, os
 
 import plot_settings
 import matplotlib.pyplot as plt
@@ -7,7 +7,7 @@ ALPHA = 0.7
 LEGEND_FONT = 15
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import create_pulse_param, sample_ideal_project, estimate_fourier_coeff, compute_ann_filt, estimate_time_param, estimate_amplitudes, compute_srr_db_points, cadzow_denoising, gen_fri
 
 
@@ -95,7 +95,9 @@ if __name__ == '__main__':
 
     # visualize, can clearly see two peaks!
     visualize(ck, tk, ck_hat, tk_hat, y_samp, t_samp, ck_hat_gen, tk_hat_gen)
-    plt.savefig("_fig2p16a.pdf", format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p16a.pdf")
+    plt.savefig(fp, dpi=300)
+
 
     """
     Higher oversampling in frequency with cadzow denoising + genfri, 
@@ -134,7 +136,7 @@ if __name__ == '__main__':
 
     # visualize, can clearly see two peaks!
     visualize(ck, tk, ck_hat, tk_hat, y_samp, t_samp, ck_hat_gen, tk_hat_gen)
-    plt.savefig("_fig2p16b.pdf", format='pdf', dpi=300)
-
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p16b.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.show()

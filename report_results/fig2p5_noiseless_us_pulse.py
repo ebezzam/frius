@@ -1,9 +1,10 @@
 import numpy as np
+import os
 import plot_settings
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 
 from frius import create_pulse_param, compute_ann_filt, \
     estimate_time_param, estimate_amplitudes, evaluate_recovered_param
@@ -24,7 +25,7 @@ speed_sound = 1540
 seed = 0
 
 # user parameters
-n_diracs = 15     # report Figure done with 15
+n_diracs = 15
 depth = 5e-2  # in meters
 viz = True
 
@@ -42,8 +43,7 @@ n_samples = 2*M+1
 samp_bw = n_samples/period
 Ts = 1/samp_bw
 
-y_samp, t_samp = sample_iq(ck, tk, period, samp_bw, 
-    center_freq, bw, n_cycles, bwr)
+y_samp, t_samp = sample_iq(ck, tk, period, samp_bw, center_freq, bw, n_cycles, bwr)
 
 """
 Estimate FS coefficients of sum of diracs
@@ -93,7 +93,9 @@ if viz:
     plt.legend(loc='lower right')
     ax = plt.gca()
     ax.axes.yaxis.set_ticklabels([])
-    plt.savefig("_fig2p5a.pdf", dpi=300)
+
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p5a.pdf")
+    plt.savefig(fp, dpi=300)
 
     """rf data + iq data"""
     norm_fact_rf = np.max(abs(y_rf))
@@ -111,7 +113,6 @@ if viz:
     plt.legend(loc='lower right')
     ax = plt.gca()
     ax.axes.yaxis.set_ticklabels([])
-
 
     """reconstruction"""
     plt.figure()
@@ -131,7 +132,8 @@ if viz:
     plt.tight_layout()
     ax = plt.gca()
     ax.axes.yaxis.set_ticklabels([])
-    plt.savefig("_fig2p5b.pdf", dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p5b.pdf")
+    plt.savefig(fp, dpi=300)
 
 print("Sampling rate (FRI) : %f" % samp_bw)
 print("Sampling rate reduction from RF : %f" % (samp_freq/samp_bw))

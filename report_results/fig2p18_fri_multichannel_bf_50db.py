@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 ALPHA = 0.7
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import das_beamform, image_bf_data, gen_echoes, time2distance, \
     distance2time, sample_rf
 from frius import recover_parameters, compute_srr_db_points, compute_srr_db, demodulate
@@ -17,6 +17,7 @@ DAS beamforming without apodization
 """
 
 K = 20
+cadzow_iter = 20   # even number
 oversample_freq = 5
 min_depth = 0.007
 max_depth = 0.057
@@ -24,8 +25,7 @@ max_depth = 0.057
 """ Load data """
 raw_file = 'raw_data_20points_SNR50dB_1pw_1p0cycles_1-05_12h15.h5'
 n_points = 20
-f = h5py.File(os.path.join('..', 'data', raw_file), 'r')
-plot_original = True
+f = h5py.File(os.path.join(os.path.dirname(__file__), '..', 'data', raw_file), 'r')
 
 # extract all fields
 rf_data = np.squeeze(np.array(f['rf_data']))
@@ -69,8 +69,7 @@ n_samples = rf_data_trunc.shape[1]
 channel_idx = n_elements//2
 ck_hat, tk_hat, period = recover_parameters(
     rf_data_trunc[channel_idx,:], time_vec_trunc, K, oversample_freq,
-    center_freq, bandwidth,
-    num_cycles)
+    center_freq, bandwidth, num_cycles, cadzow_iter=cadzow_iter)
 print("Locations SRR [dB] : %f " % compute_srr_db_points(
     true_tofs[channel_idx,:], tk_hat+t0))
 
@@ -94,7 +93,8 @@ plt.legend()
 plt.tight_layout()
 ax = plt.gca()
 ax.axes.yaxis.set_ticklabels([])
-plt.savefig("_fig2p18b.pdf", format='png', dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p18b.pdf")
+plt.savefig(fp, dpi=300)
 
 
 """ Sweep through all channels """
@@ -115,7 +115,7 @@ for channel_idx in range(n_elements):
     ck_hat_multi[channel_idx], tk_hat_multi[channel_idx], period = \
         recover_parameters(
             rf_data_trunc[channel_idx,:], time_vec_trunc,
-            K=K, oversample_freq=oversample_freq,
+            K=K, oversample_freq=oversample_freq, cadzow_iter=cadzow_iter,
             center_freq=center_freq, bandwidth=bandwidth, num_cycles=num_cycles)
     
     # remember to add offset!
@@ -150,20 +150,22 @@ image_bf_data(bf_fri, probe_geometry, max_depth=max_depth,
 plt.ylabel('Axial [cm]')
 plt.xlabel('Lateral [cm]')
 plt.tight_layout()
-plt.savefig("_fig2p18a.png", format='png', dpi=300)
-
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p18a.png")
+plt.savefig(fp, dpi=300)
 
 fs_iq = center_freq*bandwidth
 n_samples_fri = 2*K*oversample_freq+1
 fs_fri = n_samples_fri/duration
+iq_compression = samp_freq/fs_iq
 
 print()
 print("Num of samples (RF) : %d" % n_samples)
 print("Num of samples (FRI) : %d" % n_samples_fri)
 print("Sampling rate (FRI) : %f" % fs_fri)
 
-print("Data rate reduction from RF : %f" % (n_samples/n_samples_fri))
+print("Sampling rate reduction from RF : %f" % (samp_freq/fs_fri))
 print("Sampling rate reduction from IQ : %f" % (fs_iq/fs_fri))
-print("Compression : %f" % (n_samples/(2*K)))
+print("RF compression : %f" % (n_samples/(2*K)))
+print("IQ compression : %f" % (n_samples/iq_compression/(2*K)))
 
 plt.show()

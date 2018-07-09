@@ -1,5 +1,5 @@
 import numpy as np
-import h5py, time, warnings, os
+import time, warnings, os
 
 # plotting settings
 import plot_settings
@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 LEGEND_FONTSIZE = 15
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import distance2time, total_freq_response, time2distance, das_beamform, image_bf_data, estimate_2d_loc
 from frius import gen_fri, estimate_time_param, cadzow_denoising, estimate_fourier_coeff, compute_ann_filt
 from frius import tof_sort_nde, edm
@@ -40,7 +40,7 @@ tol = 1e-5  # tolerance for removing duplicates
 
 # load results if available, otherwise run algo
 try:
-    npzfile = np.load(os.path.join(results_dir, "results.npz"))
+    npzfile = np.load(os.path.join(os.path.dirname(__file__), results_dir, "results.npz"))
     rx_echoes = npzfile['rx_echoes']
     amplitudes = npzfile['amplitudes']
     resynth_score = npzfile['resynth_score']
@@ -68,7 +68,7 @@ n_elem_tx = 64
 probe_geometry = np.arange(n_elem_tx)*dx
 
 # signed 16 bit integer [-128,127]
-ndt_rawdata = np.genfromtxt(os.path.join('..', 'data', 'ndt_rawdata.csv'), delimiter=',')
+ndt_rawdata = np.genfromtxt(os.path.join(os.path.dirname(__file__), '..', 'data', 'ndt_rawdata.csv'), delimiter=',')
 n_samples = len(ndt_rawdata)
 time_vec = np.arange(n_samples)/samp_freq
 depth = time_vec[-1]/2*speed_sound
@@ -175,7 +175,7 @@ else:
 
 
 """
-Sort TOFs with EDM/Grame test
+Sort TOFs with EDM/Gram test
 """
 array_pos_2d = np.vstack((array_pos, np.zeros(n_elem_rx)))
 sorted_tof_est, sorted_tof_chan, sorted_tof_scores = tof_sort_nde(rx_echoes, array_pos_2d, speed_sound, verbose=verbose)
@@ -267,7 +267,7 @@ plt.ylabel("Axial [cm]")
 plt.ylim([max_depth*scal_fact, 0])
 plt.legend(fontsize=LEGEND_FONTSIZE, loc=3)
 plt.tight_layout()
-
-plt.savefig("_fig4p6.png", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig4p6.png")
+plt.savefig(fp, dpi=300)
 
 plt.show()

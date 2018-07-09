@@ -1,12 +1,11 @@
-import numpy as np
-
+import os
 import plot_settings
 import matplotlib.pyplot as plt
 
 from test_utilities import process_fig2p10
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import distance2time
 
 """
@@ -21,7 +20,7 @@ Over 100 samples seems to result in poor reconstruction...
 # user parameters
 viz = True
 snr_db = 20
-cadzow_iter = 20
+cadzow_iter = 20    # even number
 
 # constants
 clk_verasonics = 62.5e6
@@ -39,14 +38,16 @@ process_fig2p10(n_diracs=10, period=period, snr_db=snr_db,
     center_freq=center_freq, bw=bw, n_cycles=n_cycles, bwr=bwr, 
     samp_freq=samp_freq, cadzow_iter=cadzow_iter, 
     oversample_fact=8, viz=viz)
-plt.savefig("_fig2p10a.pdf", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p10a.pdf")
+plt.savefig(fp, dpi=300)
 
 # 10 diracs, 8x oversampled
 process_fig2p10(n_diracs=20, period=period, snr_db=snr_db,
     center_freq=center_freq, bw=bw, n_cycles=n_cycles, bwr=bwr, 
     samp_freq=samp_freq, cadzow_iter=cadzow_iter, 
     oversample_fact=4, viz=viz)
-plt.savefig("_fig2p10b.pdf", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p10b.pdf")
+plt.savefig(fp, dpi=300)
 
 
 plt.show()

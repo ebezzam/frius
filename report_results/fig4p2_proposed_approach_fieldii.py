@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 ALPHA = 0.65
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import distance2time, time2distance, gen_echoes, estimate_2d_loc, das_beamform, image_bf_data
 from frius import recover_parameters, compute_srr_db_points
 from frius import tof_sort_pruning
@@ -32,7 +32,7 @@ Load data
 raw_file = 'raw_data_15points_1pw_1p0cycles_1-05_13h08.h5'
 
 seed = 0
-hf = h5py.File(os.path.join('..', 'data', raw_file), 'r')
+hf = h5py.File(os.path.join(os.path.dirname(__file__), '..', 'data', raw_file), 'r')
 
 # extract all fields
 rf_data = np.squeeze(np.array(hf['rf_data']))
@@ -100,7 +100,8 @@ plt.tight_layout()
 plt.legend()
 ax = plt.gca()
 ax.axes.yaxis.set_ticklabels([])
-plt.savefig("_fig4p2a.pdf", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig4p2a.png")
+plt.savefig(fp, dpi=300)
 
 """
 Subsample array at receive
@@ -172,7 +173,8 @@ plt.xlabel("Lateral [cm]")
 plt.ylabel("Axial [cm]")
 plt.legend(loc=4, fontsize=15)
 plt.tight_layout()
-plt.savefig("_fig4p2b.png", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig4p2b.png")
+plt.savefig(fp, dpi=300)
 
 n_samples_fri = 2*K*oversample_fact+1
 print("Num of samples (RF) : %d" % n_samples)

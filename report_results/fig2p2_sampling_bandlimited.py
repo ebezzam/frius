@@ -1,5 +1,6 @@
 import numpy as np
 import plot_settings
+import os
 import matplotlib.pyplot as plt
 
 # fix random number generator
@@ -19,9 +20,10 @@ plt.xlabel("Frequencies [Hz]")
 
 ax = plt.gca()
 ax.axes.yaxis.set_ticklabels([])
-
 plt.tight_layout()
-plt.savefig("_fig2p2a.pdf", dpi=300)
+
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p2a.pdf")
+plt.savefig(fp, dpi=300)
 
 """
 Ideal low pass filter
@@ -39,8 +41,9 @@ plt.xlabel("Frequencies [Hz]")
 
 ax = plt.gca()
 ax.axes.yaxis.set_ticklabels([])
-
 plt.tight_layout()
-plt.savefig("_fig2p2b.pdf", dpi=300)
+
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p2b.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.show()

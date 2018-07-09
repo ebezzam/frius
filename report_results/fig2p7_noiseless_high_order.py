@@ -1,9 +1,10 @@
 import numpy as np
+import os
 import plot_settings
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 
 from frius import create_pulse_param, compute_ann_filt, \
     estimate_time_param, estimate_amplitudes, evaluate_recovered_param, \
@@ -75,14 +76,13 @@ evaluate_recovered_param(ck, tk, ck_hat, tk_hat)
 tk_err = compute_srr_db_points(tk, tk_hat)
 print("Locations SRR : %f dB" % tk_err)
 
-
 """
-Plot measured data, alongside typical RF data
+Visualize recovery
 """
-y_rf, t_rf = sample_rf(ck, tk, period, samp_freq, 
-    center_freq, bw, n_cycles, bwr)
-y_rf_resynth, t_rf = sample_rf(ck_hat, tk_hat, period, samp_freq, 
-        center_freq, bw, n_cycles, bwr)
+y_rf, t_rf = sample_rf(ck, tk, period, samp_freq,
+                       center_freq, bw, n_cycles, bwr)
+y_rf_resynth, t_rf = sample_rf(ck_hat, tk_hat, period, samp_freq,
+                               center_freq, bw, n_cycles, bwr)
 err_sig = compute_srr_db(y_rf, y_rf_resynth)
 print("Resynthesized error : %f dB" % err_sig)
 
@@ -110,10 +110,10 @@ if viz:
 
     plt.figure()
     plt.plot(time_scal*t_rf, y_rf/norm_fact_rf, label="RF data", alpha=0.65)
-    plt.plot(time_scal*t_samp, np.real(y_samp)/norm_fact_iq, 'go-', 
-        label="Measured (I)", alpha=0.7)
-    plt.plot(time_scal*t_samp, np.imag(y_samp)/norm_fact_iq, 'm^-', 
-        label="Measured (Q)", alpha=0.7)
+    plt.plot(time_scal*t_samp, np.real(y_samp)/norm_fact_iq, 'go-', label="Measured (I)",
+             alpha=0.7)
+    plt.plot(time_scal*t_samp, np.imag(y_samp)/norm_fact_iq, 'm^-', label="Measured (Q)",
+             alpha=0.7)
     plt.xlabel("Time [%s seconds]" % str(1/time_scal))
     plt.grid()
     plt.tight_layout()
@@ -121,16 +121,13 @@ if viz:
     ax = plt.gca()
     ax.axes.yaxis.set_ticklabels([])
 
-
     """reconstruction"""
     plt.figure()
-
     baseline = plt.stem(time_scal*tk, ck, 'g', markerfmt='go', label="True")[2]
     plt.setp(baseline, color='g')
     baseline.set_xdata([0, time_scal*period])
-
-    baseline = plt.stem(time_scal*tk_hat, ck_hat, 'r', markerfmt='r^', 
-        label="Estimate")[2]
+    baseline = plt.stem(time_scal*tk_hat, ck_hat, 'r', markerfmt='r^',
+                        label="Estimate")[2]
     plt.setp(baseline, color='r')
     baseline.set_xdata(([0, time_scal*period]))
     plt.xlabel("Time [%s seconds]" % str(1/time_scal))
@@ -140,7 +137,8 @@ if viz:
     plt.tight_layout()
     ax = plt.gca()
     ax.axes.yaxis.set_ticklabels([])
-    plt.savefig("_fig2p7a.pdf", dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p7a.pdf")
+    plt.savefig(fp, dpi=300)
 
     """ resynthesized signal"""
     plt.figure()
@@ -153,7 +151,8 @@ if viz:
     plt.legend(loc='lower right')
     ax = plt.gca()
     ax.axes.yaxis.set_ticklabels([])
-    plt.savefig("_fig2p7b.pdf", dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p7b.pdf")
+    plt.savefig(fp, dpi=300)
 
 
 plt.show()

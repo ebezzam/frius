@@ -1,20 +1,8 @@
 import numpy as np
 import plot_settings
 import matplotlib.pyplot as plt
-
-
-def gausspuls_coeff(fc, bandwidth, bwr=-6.):
-    ref = pow(10.0, bwr / 20.0)
-    return -(np.pi * fc * bandwidth) ** 2 / (4.0 * np.log(ref))
-
-def gausspulse(t_vals, fc, bandwidth, bwr=-6.):
-    a = gausspuls_coeff(fc, bandwidth, bwr)
-    return np.exp(-a * t_vals**2) * np.cos(2*np.pi*fc*t_vals)
-
-def gauss_ft(f_vals, a, fc=0):
-    pos_half = np.sqrt(np.pi / a) * np.exp(-1.*(np.pi*(f_vals-fc))**2 / a)
-    neg_half = np.sqrt(np.pi / a) * np.exp(-1.*(np.pi*(f_vals+fc))**2 / a)
-    return (pos_half + neg_half)/2
+import os
+from test_utilities import gausspuls_coeff, gausspulse, gauss_ft
 
 # time domain plot
 fc = 5e6
@@ -32,10 +20,10 @@ plt.xlabel("Time [seconds]")
 
 ax = plt.gca()
 ax.axes.yaxis.set_ticklabels([])
-# ax.axes.xaxis.set_ticklabels([])
-
 plt.tight_layout()
-plt.savefig("_fig1p6a.pdf", dpi=300)
+
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig1p6a.pdf")
+plt.savefig(fp, dpi=300)
 
 # frequency domain pulse
 f_vals = np.linspace(-3*fc-1e3, 3*fc+1e3, 1000)
@@ -52,9 +40,9 @@ plt.ylabel("[dB]")
 plt.legend(loc=3)
 plt.xlabel("Frequency [Hz]")
 plt.ylim([-40,0])
-
 plt.tight_layout()
-plt.savefig("_fig1p6b.pdf", dpi=300)
 
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig1p6b.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.show()

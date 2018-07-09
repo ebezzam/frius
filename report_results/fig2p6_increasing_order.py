@@ -7,8 +7,9 @@ import matplotlib.pyplot as plt
 from test_utilities import process_fig2p6
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import total_freq_response, distance2time
+
 
 """
 Increase number of pulses in noiseless situation. Compute SRR of resynthesized
@@ -36,7 +37,7 @@ if __name__ == '__main__':
 
     # load file available, otherwise run test
     try:
-        npzfile = np.load(os.path.join(results_dir, "results.npz"))
+        npzfile = np.load(os.path.join(os.path.dirname(__file__), results_dir, "results.npz"))
         n_diracs_vals = npzfile["n_diracs_vals"]
         err_sig = npzfile["err_sig"]
         err_loc = npzfile["err_loc"]
@@ -100,13 +101,13 @@ if __name__ == '__main__':
             avg_time = (time.time() - n_diracs_time)/n_trials
             print("Average reconstruction time for %d dirac(s) : %f sec" % (K, avg_time))
 
-
         """ Save """
         time_stamp = datetime.datetime.now().strftime("%m_%d_%Hh%M")
-        results_dir = "noiseless_increasing_order%s" % time_stamp
+        results_dir = os.path.join(os.path.dirname(__file__), "noiseless_increasing_order%s" % time_stamp)
         os.makedirs(results_dir)
-        np.savez(os.path.join(results_dir, "results"), n_diracs_vals=n_diracs_vals, 
+        np.savez(os.path.join(results_dir, "results"), n_diracs_vals=n_diracs_vals,
             err_sig=err_sig, err_loc=err_loc)
+        print("Results saved to %s" % results_dir)
 
         print()
         print("TOTAL SIMULATION TIME : %f min" % ((time.time()-start_sweep)/60.) )
@@ -117,7 +118,6 @@ if __name__ == '__main__':
     sig_err_per_ndiracs = np.mean(err_sig, axis=1)
     loc_std = np.std(err_loc, axis=1)
     sig_std = np.std(err_sig, axis=1)
-
 
     f, (ax1, ax2) = plt.subplots(2,1, sharex=True)
 
@@ -138,9 +138,8 @@ if __name__ == '__main__':
     ax2.set_xlabel("Num. of pulses [log scale]")
     f.tight_layout()
 
-    plt.savefig(os.path.join(results_dir, "_fig2p6.pdf"), format='pdf', dpi=300)
-
-    print("Results saved to %s" % results_dir)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig2p6.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.show()
 

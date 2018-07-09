@@ -6,7 +6,7 @@ import plot_settings
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import time2distance, das_beamform, image_bf_data
 
 
@@ -29,7 +29,7 @@ pulse_dur = 500e-9
 n_cycles = 0.5
 
 # signed 16 bit integer [-128,127]
-ndt_rawdata = np.genfromtxt(os.path.join('..', 'data', 'ndt_rawdata.csv'), delimiter=',')
+ndt_rawdata = np.genfromtxt(os.path.join(os.path.dirname(__file__), '..', 'data', 'ndt_rawdata.csv'), delimiter=',')
 n_samples = len(ndt_rawdata)
 time_vec = np.arange(n_samples)/samp_freq
 depth = time2distance(time_vec[-1], speed_sound)
@@ -49,8 +49,8 @@ plt.xlabel("Lateral [cm]")
 plt.ylabel("Axial [cm]")
 plt.ylim([depth*scal_fact, 0])
 plt.tight_layout()
-
-plt.savefig("_fig4p4a.png", dpi=300)
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig4p4a.png")
+plt.savefig(fp, dpi=300)
 
 
 """
@@ -65,7 +65,7 @@ plt.xlabel("Time [microseconds]")
 ax = plt.gca()
 ax.axes.yaxis.set_ticklabels([])
 plt.tight_layout()
-plt.savefig("_fig4p4b.pdf", dpi=300)
-
+fp = os.path.join(os.path.dirname(__file__), "figures", "_fig4p4b.pdf")
+plt.savefig(fp, dpi=300)
 
 plt.show()

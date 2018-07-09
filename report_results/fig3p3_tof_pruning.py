@@ -11,7 +11,7 @@ MARKER_SIZE = 10
 from test_utilities import evaluate_tof_sorting
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import Probe, Medium, estimate_2d_loc
 from frius import compute_srr_db_points
 from frius import tof_sort_pruning
@@ -104,7 +104,7 @@ if __name__ == '__main__':
 
     # load file if available, otherwise run test
     try:
-        npzfile = np.load(os.path.join(results_dir, "results.npz"))
+        npzfile = np.load(os.path.join(os.path.dirname(__file__), results_dir, "results.npz"))
         n_points_vals = npzfile["n_points_vals"]
         n_comb = npzfile["n_comb"]
         n_comb_maxtof = npzfile["n_comb_maxtof"]
@@ -189,9 +189,8 @@ if __name__ == '__main__':
         Save results
         """
         time_stamp = datetime.datetime.now().strftime("%m_%d_%Hh%M")
-        results_dir = "tof_pruning_%s" % (time_stamp)
+        results_dir = os.path.join(os.path.dirname(__file__), "tof_pruning_%s" % (time_stamp))
         os.makedirs(results_dir)
-
         np.savez(os.path.join(results_dir, "results"), 
             n_trials=n_trials, n_points_vals=n_points_vals, 
             n_comb=n_comb, n_comb_maxtof=n_comb_maxtof,
@@ -225,8 +224,8 @@ if __name__ == '__main__':
     plt.xlabel("Num. reflectors")
     plt.ylabel("Num. combinations")
     plt.tight_layout()
-    plt.savefig(os.path.join(results_dir, "_fig3p3a.pdf"), 
-            format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig3p3a.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.figure()
     plt.plot(n_points_vals, avg_proc, label="Removing used", alpha=ALPHA, marker='<', markersize=MARKER_SIZE)
@@ -238,7 +237,7 @@ if __name__ == '__main__':
     plt.xlabel("Num. reflectors")
     plt.ylabel("Processing time [s]")
     plt.tight_layout()
-    plt.savefig(os.path.join(results_dir, "_fig3p3b.pdf"), 
-            format='pdf', dpi=300)
+    fp = os.path.join(os.path.dirname(__file__), "figures", "_fig3p3b.pdf")
+    plt.savefig(fp, dpi=300)
 
     plt.show()
