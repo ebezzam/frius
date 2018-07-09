@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.signal import square
 
-import sys
-sys.path.append('..')
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 
 from frius import create_pulse_param, compute_ann_filt, estimate_time_param, \
     estimate_fourier_coeff, estimate_amplitudes, compute_srr_db_points, \

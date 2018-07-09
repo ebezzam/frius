@@ -28,8 +28,8 @@ n_samples = int(duration//samp_time_hi)
 freqs = np.fft.fftfreq(n_samples, samp_time_hi)
 
 H_tot = total_freq_response(freqs, center_freq, bw_pulse, n_cycles)
-h_time = np.roll(np.fft.ifft(H_tot), n_samples//2)
-t = np.arange(n_samples)* samp_time_hi
+h_time = np.real(np.roll(np.fft.ifft(H_tot), n_samples//2))
+t = np.arange(n_samples) * samp_time_hi
 
 plt.figure()
 plt.plot(t, h_time)

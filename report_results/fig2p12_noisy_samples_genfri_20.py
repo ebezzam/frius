@@ -11,7 +11,7 @@ LINESTYLE = '--'
 from test_utilities import process_noisy_samples_gen
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import total_freq_response, distance2time
 
 """

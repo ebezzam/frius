@@ -2,7 +2,7 @@ import numpy as np
 import plot_settings
 import matplotlib.pyplot as plt
 import os
-from test_utilities import creat_square_excitation, square_excitation_ft
+from test_utilities import create_square_excitation, square_excitation_ft
 
 # time domain plot
 fc = 5e6

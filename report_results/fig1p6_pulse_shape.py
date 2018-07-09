@@ -1,7 +1,9 @@
 import numpy as np
 import plot_settings
 import matplotlib.pyplot as plt
-import os
+import os, sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__)))
 from test_utilities import gausspuls_coeff, gausspulse, gauss_ft
 
 # time domain plot
