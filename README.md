@@ -9,15 +9,14 @@ Supervisors: [Adrien Besson](https://adribesson.github.io/),<sup>1</sup>
 <sup>1</sup>Signal Processing Laboratory 5 ([LTS5](https://lts5www.epfl.ch/)) at [EPFL](http://www.epfl.ch).  
 <sup>2</sup>Audiovisual Communications Laboratory ([LCAV](http://lcav.epfl.ch)) at [EPFL](http://www.epfl.ch).
 
+The full report can be found on [Infoscience](https://infoscience.epfl.ch/record/255931?&ln=en).
 
-Questions/comments can be directed to: `eric[dot]bezzam[at]epfl.ch`
-
-Or feel free to create an issue up top!
+Questions/comments can be directed to: `eric[dot]bezzam[at]epfl.ch`. Or feel free to create an issue up top!
 
 ## Summary
 
 The initial goal of this Master thesis was to reduce the sampling and thus data rate necessary for medical ultrasound imaging.
-To this end, we investigate how recent signal processing approach with regards to [_Finite Rate of Innovation_](https://ieeexplore.ieee.org/document/1003065/) (FRI) and
+To this end, we investigate how recent signal processing approaches in [_Finite Rate of Innovation_](https://ieeexplore.ieee.org/document/1003065/) (FRI) and
 [_Euclidean Distance Matrices_](https://ieeexplore.ieee.org/document/7298562/) (EDM) can be applied to the task of ultrasound imaging and localization. 
 
 For medical imaging, we identify a few practical limitations (e.g. sparsity under noise, zero-finding) that 
@@ -25,8 +24,8 @@ complicate the application of FRI techniques, in particular to achieve real-time
 the conventional approaches.
 
 For the task of localization, we identify a suitable candidate for FRI and EDM techniques, most notably for the task of 
-non-destructive evaluation (NDE) where we can identify a small amount of desired features at rates lower than 
-conventional methods.
+identifying a sparse number of bright reflectors. We consider an example of non-destructive evaluation (NDE) 
+where we would like to identify a small amount of defects at rates lower than conventional methods.
 
 ## Citation
 
