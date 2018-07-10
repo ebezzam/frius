@@ -1,15 +1,15 @@
 # Sampling at the rate of innovation for ultrasound imaging and localization (EPFL Master Thesis 2018)
 
 Author: [Eric Bezzam](https://ebezzam.github.io/)  
-Supervisors: [Adrien Besson](https://adribesson.github.io/),<sup>1</sup> 
-[Hanjie Pan](https://lcav.epfl.ch/people/hanjie.pan),<sup>2</sup>
-[Dimitris Perdios](https://people.epfl.ch/dimitris.perdios),<sup>1</sup>
+Supervisors: [Adrien Besson](https://adribesson.github.io/)<sup>1</sup>, 
+[Hanjie Pan](https://lcav.epfl.ch/people/hanjie.pan)<sup>2</sup>,
+[Dimitris Perdios](https://people.epfl.ch/dimitris.perdios)<sup>1</sup>,
 [Prof. Jean-Philippe Thiran](https://lts5www.epfl.ch/thiran.html)<sup>1</sup>
 
 <sup>1</sup>Signal Processing Laboratory 5 ([LTS5](https://lts5www.epfl.ch/)) at [EPFL](http://www.epfl.ch).  
 <sup>2</sup>Audiovisual Communications Laboratory ([LCAV](http://lcav.epfl.ch)) at [EPFL](http://www.epfl.ch).
 
-The full report can be found on [Infoscience](https://infoscience.epfl.ch/record/255931?&ln=en).
+The full [report](https://infoscience.epfl.ch/record/255931/files/bezzam_master_thesis.pdf) and [slides](https://infoscience.epfl.ch/record/255931/files/slides.pdf) can be found on [Infoscience](https://infoscience.epfl.ch/record/255931?&ln=en).
 
 Questions/comments can be directed to: `eric[dot]bezzam[at]epfl[dot]ch`. Or feel free to create an issue up top!
 
