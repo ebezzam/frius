@@ -107,10 +107,10 @@ if __name__ == '__main__':
 
     # evaluate
     tk_err = compute_srr_db_points(tk, tk_hat)
-    print("%d oversampling in time with cadzow + tls: %f dB" % (oversampling_time, tk_err))
+    print("%dx oversampling in time with cadzow + tls: %f dB" % (oversampling_time, tk_err))
 
     tk_err_gen = compute_srr_db_points(tk, tk_hat_gen)
-    print("%d oversampling in time with genfri : %f dB" % (oversampling_time, tk_err_gen))
+    print("%dx oversampling in time with genfri : %f dB" % (oversampling_time, tk_err_gen))
 
     # visualize
     visualize(ck, tk, ck_hat, tk_hat, y_samp, t_samp, ck_hat_gen, tk_hat_gen)

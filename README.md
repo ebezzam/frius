@@ -11,7 +11,7 @@ Supervisors: [Adrien Besson](https://adribesson.github.io/),<sup>1</sup>
 
 The full report can be found on [Infoscience](https://infoscience.epfl.ch/record/255931?&ln=en).
 
-Questions/comments can be directed to: `eric[dot]bezzam[at]epfl.ch`. Or feel free to create an issue up top!
+Questions/comments can be directed to: `eric[dot]bezzam[at]epfl[dot]ch`. Or feel free to create an issue up top!
 
 ## Summary
 
@@ -31,7 +31,7 @@ where we would like to identify a small amount of defects at rates lower than co
 
 If you use any code or results from here, please cite:
 
-    E. Bezzam, (2018). "Sampling at the rate of innovation for ultrasound imaging and localization," 2018
+    E. Bezzam, (2018). "Sampling at the rate of innovation for ultrasound imaging and localization," 2018,
     Unpublished Master’s thesis, EPFL, Lausanne, Switzerland.
      
     
@@ -99,7 +99,8 @@ simulations._
 
 ## License
 
-The source code is released under the [MIT](https://opensource.org/licenses/MIT) license.
+The source code is released under the [MIT](https://opensource.org/licenses/MIT) license. See the [Licence](https://github.com/ebezzam/frius/blob/master/LICENSE)
+file for more info.
 
 
 

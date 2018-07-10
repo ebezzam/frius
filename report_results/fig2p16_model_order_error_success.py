@@ -88,10 +88,10 @@ if __name__ == '__main__':
 
     # evaluate
     tk_err = compute_srr_db_points(tk, tk_hat)
-    print("%d oversampling in freq with cadzow + tls: %f dB" % (oversample_freq, tk_err))
+    print("%dx oversampling in freq with cadzow + tls: %f dB" % (oversample_freq, tk_err))
 
     tk_err_gen = compute_srr_db_points(tk, tk_hat_gen)
-    print("%d oversampling in freq with genfri : %f dB" % (oversample_freq, tk_err_gen))
+    print("%dx oversampling in freq with genfri : %f dB" % (oversample_freq, tk_err_gen))
 
     # visualize, can clearly see two peaks!
     visualize(ck, tk, ck_hat, tk_hat, y_samp, t_samp, ck_hat_gen, tk_hat_gen)
@@ -129,10 +129,10 @@ if __name__ == '__main__':
 
     # evaluate
     tk_err = compute_srr_db_points(tk, tk_hat)
-    print("%d oversampling in freq with cadzow + tls: %f dB" % (oversample_freq, tk_err))
+    print("%dx oversampling in freq with cadzow + tls: %f dB" % (oversample_freq, tk_err))
 
     tk_err_gen = compute_srr_db_points(tk, tk_hat_gen)
-    print("%d oversampling in freq with genfri : %f dB" % (oversample_freq, tk_err_gen))
+    print("%dx oversampling in freq with genfri : %f dB" % (oversample_freq, tk_err_gen))
 
     # visualize, can clearly see two peaks!
     visualize(ck, tk, ck_hat, tk_hat, y_samp, t_samp, ck_hat_gen, tk_hat_gen)

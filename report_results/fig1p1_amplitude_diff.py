@@ -1,7 +1,9 @@
 import numpy as np
-import plot_settings
 import matplotlib.pyplot as plt
-import os
+import os, sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+import plot_settings
 
 f_hi = 1000
 f_lo = 100

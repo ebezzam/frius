@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 ALPHA = 0.7
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import das_beamform, image_bf_data, gen_echoes, time2distance, \
     distance2time, sample_rf
 from frius import recover_parameters, compute_srr_db_points, compute_srr_db, demodulate

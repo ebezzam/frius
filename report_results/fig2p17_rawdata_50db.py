@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 ALPHA = 0.7
 
 import sys
-sys.path.append('..')
+sys.path.append(os.path.join(os.path.dirname(__file__), "..",))
 from frius import das_beamform, image_bf_data, time2distance, distance2time
 
 """
