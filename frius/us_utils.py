@@ -223,7 +223,7 @@ def add_noise(sig, snr_db, seed=0):
         noise_std = np.linalg.norm(sig) / (10**(snr_db/20.))
         noise = noise/np.linalg.norm(noise)*noise_std
 
-    return (sig+noise)
+    return sig+noise
 
 
 def total_freq_response(freqs, center_freq, bandwidth, num_cycles, bwr=-6,

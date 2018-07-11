@@ -186,10 +186,20 @@ def estimate_fourier_coeff(y_samp, t_samp, fs_ind=None, fc=0, H=None):
     return fs_coeff_hat
 
 
-def compute_ann_filt(fs_coeff, K):
+def compute_ann_filt(fs_coeff, K, print_ratio=False):
     """
     Compute annihilating filter of length ``K+1``, e.g. for ``K`` complex
     exponentials from the Fourier coefficients given by ``fs_coeff``.
+
+    If ``2K+1`` Fourier coefficients are given, we assume the noiseless case,
+    i.e. critical sampling, and try to solve the Yule-Walker equations for
+    the annihilating filter.
+
+    If more Fourier coefficients are given, we assume to be in the oversampling
+    scenario and obtain the annihilating filter with the total least-squares
+    approach, i.e. using the Singular Value Decomposition to select the
+    eigenvector in the expected nullspace as the annihilating filter.
+
 
     Parameters
     ----------
@@ -197,6 +207,8 @@ def compute_ann_filt(fs_coeff, K):
         At least ``2K+1`` Fourier coefficients to annihilate.
     K : int
         Number of complex exponentials.
+    print_ratio : bool
+        Print ratio of K/(K+1) singular value.
     """
 
     n_coeff = len(fs_coeff)
@@ -213,7 +225,10 @@ def compute_ann_filt(fs_coeff, K):
         row1 = np.flipud(fs_coeff[:K+1])
         A_top = toeplitz(col1, r=row1)
         U, s, Vh = svd(A_top)
-        ann_filt = np.conj(Vh[-1, :])  
+        ann_filt = np.conj(Vh[-1, :])
+
+        if print_ratio:
+            print("K/(K+1) singular value = %f\n" % (s[K-1] / s[K]))
 
     return ann_filt
 
