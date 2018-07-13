@@ -14,3 +14,5 @@ Finite rate of innovation
 * [Introduction, noiseless recovery of Dirac stream](http://nbviewer.jupyter.org/github/ebezzam/frius/blob/master/notebooks/fri_part1_intro.ipynb)
 * [Noiseless recovery of arbitrary pulse stream](http://nbviewer.jupyter.org/github/ebezzam/frius/blob/master/notebooks/fri_part2_arbitrary_pulse.ipynb)
 * [Recovery of pulse stream under additive noise](http://nbviewer.jupyter.org/github/ebezzam/frius/blob/master/notebooks/fri_part3_additive_noise.ipynb)
+* [Recovery of pulse stream under additive noise (cont.)](http://nbviewer.jupyter.org/github/ebezzam/frius/blob/master/notebooks/fri_part4_cadzow_denoising.ipynb)
+

@@ -367,7 +367,7 @@ def evaluate_recovered_param(ck, tk, ck_hat, tk_hat, viz=False, figsize=None,
         plt.xlabel("Time [seconds]", fontsize=fontsize);
     
 
-def cadzow_denoising(fs_coeff, K, L=None, n_iter=10):
+def cadzow_denoising(fs_coeff, K, L=None, n_iter=10, thresh=None, verbose=False):
     """
     Perform Cadzow denoising to project the given noisy Fourier coefficients
     onto a set of coefficients whose Toeplitz matrix has a rank 
@@ -404,28 +404,52 @@ def cadzow_denoising(fs_coeff, K, L=None, n_iter=10):
     if L < K:
         raise ValueError("L should be larger than %d!" % K)
 
-    fs_coeff_denoised = fs_coeff
-    col1 = fs_coeff_denoised[L:]
-    row1 = np.flipud(fs_coeff_denoised[:L+1])
+    # iterative denoising
+    fs_coeff_denoised = fs_coeff.copy()
+    diag_idx = L - np.arange(n_coeff)
+    S_tild = np.zeros((n_coeff - L, L + 1), dtype=np.complex)
     for k in range(n_iter):
 
-        # create toeplitz, ideally square
-        A_top = toeplitz(col1, r=row1)
-        U, s, Vh = svd(A_top)
+        # form Toeplitz
+        T = Tmtx(fs_coeff_denoised, L)
 
-        # project onto matrix of target rank (K)
-        s_tild = s
-        s_tild[K:] = 0
-        A_top_tild = np.dot(np.dot(U, np.diag(s_tild)), Vh)
+        # project to rank K
+        U, s, Vh = svd(T)
+        if verbose:
+            print("ITERATION %d : K/(K+1) singular value = %f" % (k, s[K - 1] / s[K]))
+        if thresh is not None:
+            if (s[K - 1] / s[K]) >= thresh:
+                break
+        for d in range(K):
+            S_tild[d, d] = s[d]
+        T_tild = np.dot(np.dot(U, S_tild), Vh)
 
-        # average along diagonals for denoised approximation of FS coefficients
-        fs_coeff_denoised = np.zeros(n_coeff, dtype=np.complex)
-        diag_idx = np.arange(n_coeff) - L
+        # average along diagonal
         for i, m in enumerate(diag_idx):
-            fs_coeff_denoised[i] = np.mean(np.diag(A_top_tild, m))
+            fs_coeff_denoised[i] = np.mean(np.diag(T_tild, m))
 
-        col1 = fs_coeff_denoised[L:]
-        row1 = np.flipud(fs_coeff_denoised[:L+1])
+    # fs_coeff_denoised = fs_coeff
+    # col1 = fs_coeff_denoised[L:]
+    # row1 = np.flipud(fs_coeff_denoised[:L+1])
+    # for k in range(n_iter):
+    #
+    #     # create toeplitz, ideally square
+    #     A_top = toeplitz(col1, r=row1)
+    #     U, s, Vh = svd(A_top)
+    #
+    #     # project onto matrix of target rank (K)
+    #     s_tild = s
+    #     s_tild[K:] = 0
+    #     A_top_tild = np.dot(np.dot(U, np.diag(s_tild)), Vh)
+    #
+    #     # average along diagonals for denoised approximation of FS coefficients
+    #     fs_coeff_denoised = np.zeros(n_coeff, dtype=np.complex)
+    #     diag_idx = np.arange(n_coeff) - L
+    #     for i, m in enumerate(diag_idx):
+    #         fs_coeff_denoised[i] = np.mean(np.diag(A_top_tild, m))
+    #
+    #     col1 = fs_coeff_denoised[L:]
+    #     row1 = np.flipud(fs_coeff_denoised[:L+1])
 
     return fs_coeff_denoised
 
